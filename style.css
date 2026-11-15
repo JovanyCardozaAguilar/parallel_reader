@@ -1,0 +1,34 @@
+:root{--bg:#fbfaf7;--fg:#1d1b18;--mut:#8a8478;--line:#e3dfd6;--acc:#7a4b00;--hl:#fff1c2;--bar:#f1eee6;--x:#b00020}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#17161a;--fg:#e8e4da;--mut:#8f8a7e;--line:#2c2a30;--acc:#e0a95a;--hl:#3a3220;--bar:#201f24;--x:#ff6b81}}
+:root[data-theme=dark]{--bg:#17161a;--fg:#e8e4da;--mut:#8f8a7e;--line:#2c2a30;--acc:#e0a95a;--hl:#3a3220;--bar:#201f24;--x:#ff6b81}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.55 Georgia,"Times New Roman",serif}
+#bar{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;padding:.5rem 1rem;background:var(--bar);border-bottom:1px solid var(--line);font:15px system-ui,sans-serif}
+#bar select,#bar button{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:.3rem .5rem}
+#bar button{cursor:pointer}
+#book{max-width:16rem}
+#langs{margin-left:auto;display:flex;gap:.8rem;flex-wrap:wrap}
+#langs label{cursor:pointer;white-space:nowrap}
+#reader{max-width:1400px;margin:0 auto;padding:1rem}
+h1{font-size:1.5rem;margin:.5rem 0 .2rem}
+.msg{color:var(--mut);text-align:center;margin-top:3rem}
+.grid{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));column-gap:2rem}
+.grid>*{padding:.12rem 0}
+.hd{font:600 .8rem system-ui,sans-serif;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);border-bottom:1px solid var(--line);padding-bottom:.3rem;margin-bottom:.4rem}
+.ti{font-style:italic;color:var(--mut)}
+.c{position:relative}
+.c sup{font:700 .68rem system-ui,sans-serif;color:var(--acc);margin-right:.25em;user-select:none}
+.c sup.x,.x{color:var(--x)}
+.c.empty{color:var(--mut)}
+.c.ref{color:var(--mut);font-size:.85rem;font-style:italic}
+.row-hl>.c,.hl{background:var(--hl)}
+.v{cursor:pointer}
+footer{max-width:900px;margin:2rem auto;padding:1rem;color:var(--mut);font:13px/1.5 system-ui,sans-serif;border-top:1px solid var(--line)}
+@media (max-width:760px){
+  body{font-size:16px}
+  #langs{margin-left:0;width:100%}
+  .grid{grid-template-columns:1fr}
+  .hd{display:none}
+  .v-row-start{border-top:1px solid var(--line);margin-top:.4rem;padding-top:.4rem}
+  .c::before{content:attr(data-l);font:600 .65rem system-ui,sans-serif;color:var(--mut);margin-right:.4em;text-transform:uppercase}
+}

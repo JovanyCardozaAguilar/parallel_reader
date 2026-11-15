@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Parallel Bible: English · Español · Deutsch</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header id="bar">
+  <select id="book" aria-label="Book"></select>
+  <select id="chapter" aria-label="Chapter"></select>
+  <button id="prev" aria-label="Previous chapter">‹</button>
+  <button id="next" aria-label="Next chapter">›</button>
+  <span id="langs" role="group" aria-label="Languages">
+    <label><input type="checkbox" value="en" checked> English</label>
+    <label><input type="checkbox" value="es" checked> Español</label>
+    <label><input type="checkbox" value="de" checked> Deutsch</label>
+  </span>
+  <button id="theme" aria-label="Toggle dark mode">◐</button>
+</header>
+<main id="reader" aria-live="polite"><p class="msg">Loading…</p></main>
+<footer>
+  <p>Private, non-commercial reading copy. English: World English Bible (public domain). Español: Santa Biblia libre Latinoamericano (public domain). Deutsch: Luther 1912 and Menge 1939 (public domain); 1–2 Esdras, 3–4 Maccabees and Psalm 151 are an AI synthesis from public-domain sources, not a published translation. All three share the WEB/KJV verse numbering; verse numbers like <span class="x">48E</span> exist in one language only.</p>
+</footer>
+<script src="app.js"></script>
+</body>
+</html>
