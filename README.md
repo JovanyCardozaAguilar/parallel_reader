@@ -1,4 +1,4 @@
-# bible_reader_parallel
+# parallel_reader
 
 Static three-column (English | Español | Deutsch) Bible reader for GitHub Pages. No build step on the server.
 
