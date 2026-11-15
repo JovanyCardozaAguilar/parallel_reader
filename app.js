@@ -2,7 +2,8 @@
 'use strict';
 var LANGS=['en','es','de'],LABEL={en:'English',es:'Español',de:'Deutsch'};
 var $=function(i){return document.getElementById(i)};
-var man,cache={},cur={book:'GEN',ch:'1'},ui=localStorage.getItem('ui')||'en';
+var analysis=get0('analysis')==='1',man,cache={},cur={book:'GEN',ch:'1'},ui=localStorage.getItem('ui')||'en';
+function get0(k){try{return localStorage.getItem(k)}catch(e){return null}}
 function store(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 function get(k){try{return localStorage.getItem(k)}catch(e){return null}}
 var active=(get('langs')||'en,es,de').split(',').filter(function(l){return LANGS.indexOf(l)>=0});
@@ -48,7 +49,7 @@ function render(vsel){
     var keys=[],seen={};
     want.forEach(function(l){data[l].v.forEach(function(p){if(!seen[p[0]]){seen[p[0]]=1;keys.push(p[0])}})});
     keys.sort(cmp);
-    var maps={};want.forEach(function(l){maps[l]={};data[l].v.forEach(function(p){maps[l][p[0]]=p[1]})});
+    var maps={};want.forEach(function(l){maps[l]={};data[l].v.forEach(function(p){maps[l][p[0]]=p})});
     var bridgeCover={};
     want.forEach(function(l){bridgeCover[l]={};var b=data[l].b||{};for(var a in b){for(var n=+a+1;n<=+b[a];n++)bridgeCover[l][n]=a}});
     var h='<h1>'+esc(name(book))+' '+esc(ch)+'</h1><div class="grid" style="--n:'+want.length+'">';
@@ -58,7 +59,7 @@ function render(vsel){
     keys.forEach(function(k){
       var isNum=/^\d+$/.test(k);
       want.forEach(function(l,i){
-        var t=maps[l][k],cls='c v'+(i===0?' v-row-start':''),inner='';
+        var it=maps[l][k],t=it&&it[1],cls='c v'+(i===0?' v-row-start':''),inner='',sc='';
         var b=data[l].b||{};
         if(t===undefined){cls+=' empty'}
         else if(!t.trim()){
@@ -67,16 +68,36 @@ function render(vsel){
           else cls+=' empty';
         }else{
           var lab=b[k]?k+'–'+b[k]:k;
-          inner='<sup'+(isNum?'':' class="x"')+'>'+esc(lab)+'</sup>'+esc(t.trim());
+          inner='<sup'+(isNum?'':' class="x"')+'>'+esc(lab)+'</sup>'+body(data[l],k,t,it);
         }
-        h+='<div class="'+cls+'" data-v="'+k+'" data-l="'+l+'">'+inner+'</div>';
+        if(it){sc=l==='de'?it[2]:l;if(!t.trim()&&l==='de')sc='N'}
+        if(analysis&&it)inner+=tag(l,k,t,sc,data[l]);
+        h+='<div class="'+cls+'" data-v="'+k+'" data-l="'+l+'"'+(analysis&&sc?' data-s="'+sc+'"':'')+'>'+inner+'</div>';
       });
     });
-    R.innerHTML=h+'</div>';
+    R.innerHTML=h+'</div>';R.className=analysis?'an':'';
     document.title=name(book)+' '+ch+' · Parallel Bible';
     if(vsel){var el=R.querySelector('.c[data-v="'+vsel+'"]');if(el){el.scrollIntoView({block:'center'});hlRow(vsel)}}
     else window.scrollTo(0,0);
   }).catch(function(e){R.innerHTML='<p class="msg">Could not load this book ('+esc(e.message)+').</p>'});
+}
+function body(d,k,t,it){
+  var x=analysis&&d.x&&d.x[k];
+  if(!x)return esc(t.trim());
+  var o='';x.forEach(function(s){var seg=t.slice(s[0],s[1]);if(k&&s[0]===0)seg=seg.replace(/^\s+/,'');o+='<mark class="m'+s[2].charAt(0)+'">'+esc(seg)+'</mark>'});
+  return o;
+}
+function tag(l,k,t,sc,d){
+  var S=man.sources[l],h='<span class="tag">';
+  if(l!=='de'){
+    h+=t.trim()?'<b>'+(l==='en'?'WEB':'spabll')+'</b> · '+esc(S):'Empty: this verse is omitted in WEB';
+  }else{
+    var x=d.x&&d.x[k];
+    if(x){var seen={};h+=x.filter(function(s){return!seen[s[2]]&&(seen[s[2]]=1)}).map(function(s){return'<b style="--sc:var(--s'+s[2].charAt(0)+')">'+esc(S[s[2]])+'</b>'}).join(' + ')}
+    else h+='<b>'+esc(S[sc])+'</b>';
+    var n=d.n&&d.n[k];if(n)h+='<i>'+esc(n)+'</i>';
+  }
+  return h+'</span>';
 }
 function cmp(a,b){
   var x=/^(\d+)(E\d*)?$/.exec(a),y=/^(\d+)(E\d*)?$/.exec(b);
@@ -94,6 +115,11 @@ function step(d){
   var n=i+d;if(n<0||n>=man.order.length)return;
   var b=man.order[n],c=man.books[b];go(b,d>0?c[0]:c[c.length-1]);
 }
+function legend(){
+  var L=$('legend');L.hidden=!analysis;if(!analysis)return;
+  var S=man.sources.de,e=function(c,n){return'<span><i class="sw" style="background:var(--s'+c+')"></i>'+n+'</span>'};
+  L.innerHTML=e('en','English: WEB')+e('es','Español: spabll')+e('L','Deutsch: Luther 1912')+e('M','Menge 1939')+e('y','AI synthesis')+e('N','no source text')+'<span>Highlighted parts inside one verse come from different sources. Click a verse for its link.</span>';
+}
 function applyTheme(t){if(t)document.documentElement.setAttribute('data-theme',t)}
 fetch('data/manifest.json').then(function(r){return r.json()}).then(function(m){
   man=m;fillBooks();
@@ -105,6 +131,8 @@ fetch('data/manifest.json').then(function(r){return r.json()}).then(function(m){
       active=a;store('langs',a.join(','));render();
     });
   });
+  $('analysis').checked=analysis;legend();
+  $('analysis').addEventListener('change',function(){analysis=this.checked;store('analysis',analysis?'1':'0');legend();render()});
   $('book').addEventListener('change',function(){go(this.value,man.books[this.value][0])});
   $('chapter').addEventListener('change',function(){go(cur.book,this.value)});
   $('prev').addEventListener('click',function(){step(-1)});

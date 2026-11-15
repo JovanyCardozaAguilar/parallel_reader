@@ -23,6 +23,20 @@ h1{font-size:1.5rem;margin:.5rem 0 .2rem}
 .c.ref{color:var(--mut);font-size:.85rem;font-style:italic}
 .row-hl>.c,.hl{background:var(--hl)}
 .v{cursor:pointer}
+#an{cursor:pointer;white-space:nowrap;font-weight:600}
+:root{--sL:#3b82f6;--sM:#16a34a;--sy:#d97706;--sen:#0d9488;--ses:#db2777;--sN:#9ca3af}
+#legend{max-width:1400px;margin:0 auto;padding:.5rem 1rem 0;font:13px/1.6 system-ui,sans-serif;color:var(--mut)}
+#legend span{display:inline-block;margin-right:1rem}
+.sw{display:inline-block;width:.8rem;height:.8rem;border-radius:3px;vertical-align:-1px;margin-right:.3rem}
+.an .c[data-s]{border-left:4px solid var(--sc);padding-left:.55rem}
+.an .c[data-s=L]{--sc:var(--sL)}.an .c[data-s=M]{--sc:var(--sM)}.an .c[data-s^=y]{--sc:var(--sy)}
+.an .c[data-s=en]{--sc:var(--sen)}.an .c[data-s=es]{--sc:var(--ses)}.an .c[data-s=N]{--sc:var(--sN)}
+.an mark{color:inherit;border-radius:3px;padding:0 .1em}
+mark.mL{background:color-mix(in srgb,var(--sL) 28%,transparent)}mark.mM{background:color-mix(in srgb,var(--sM) 28%,transparent)}
+mark.my{background:color-mix(in srgb,var(--sy) 28%,transparent)}
+.tag{display:block;font:11.5px/1.35 system-ui,sans-serif;color:var(--mut);margin-top:.15rem}
+.tag b{color:var(--sc);font-weight:700}
+.tag i{display:block;font-style:normal;opacity:.85}
 footer{max-width:900px;margin:2rem auto;padding:1rem;color:var(--mut);font:13px/1.5 system-ui,sans-serif;border-top:1px solid var(--line)}
 @media (max-width:760px){
   body{font-size:16px}
